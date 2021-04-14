@@ -16,7 +16,7 @@
 
 language: sh
 os: linux
-dist: xenial
+dist: focal
 
 
 env:
@@ -32,11 +32,17 @@ cache:
 
 before_install:
   - source tools/test/travis-ci/functions.sh
+  - sudo apt-get -y install libncurses5 libtinfo5 libncursesw5
 
 addons:
   apt:
+    sources:
+      - sourceline: 'deb https://apt.kitware.com/ubuntu/ focal main'
+        key_url: 'https://apt.kitware.com/keys/kitware-archive-latest.asc'
+      - sourceline: 'deb https://apt.kitware.com/ubuntu/ focal-rc main'
     packages:
-    - ninja-build
+      - cmake
+      - ninja-build
 
 matrix:
   include:
@@ -137,7 +143,7 @@ matrix:
     - <<: *docs-vm
       name: "spellcheck"
       env: NAME=doxy-spellcheck
-      install:
+      install:        
         - source_pkg aspell
       script:
         # TODO: run checks on all directories once all mispellings are fixed
@@ -150,7 +156,7 @@ matrix:
     - <<: *docs-vm
       name: "doxygen"
       env: NAME=docs
-      install:
+      install:        
         # Build doxygen
         - >
           (git clone --depth=1 --single-branch --branch Release_1_8_14 https://github.com/doxygen/doxygen;
@@ -343,3 +349,38 @@ matrix:
             | while read file; do python ./hal/tests/pinvalidate/pinvalidate.py -vfp "${file}"; done
         - git diff --exit-code --diff-filter=d --color
 
+    ### Mbed OS unittest ###
+    - &cmake-build-run-unittest
+      stage: "CMake"
+      name: "CMake unittest build"
+      env: NAME=cmake_unittest MATRIX_EVAL="CC=gcc-9"
+      language: python
+      python: 3.8
+      install:
+        # Setup ccache
+        - ccache -o compiler_check=content
+        - ccache -M 1G
+        - pushd /usr/lib/ccache
+        - export PATH="/usr/lib/ccache:$PATH"
+        - echo $PATH
+        - which c++
+        - c++ --version
+        - ls -l /usr/lib/ccache
+        - ls -l /usr/lib/ccache/c++
+        - popd
+        # Hide Travis-preinstalled CMake
+        # The Travis-preinstalled CMake is unfortunately not installed via apt, so we
+        # can't replace it with an apt-supplied version very easily. Additionally, we
+        # can't permit the Travis-preinstalled copy to survive, as the Travis default
+        # path lists the Travis CMake install location ahead of any place where apt
+        # would install CMake to. Instead of apt removing or upgrading to a new CMake
+        # version, we must instead delete the Travis copy of CMake.
+        - sudo rm -rf /usr/local/cmake*
+      script:        
+        - echo ctest --build-and-test . build --build-generator Ninja --build-options -DBUILD_TESTING=ON --test-command ctest
+        - ctest --build-and-test . build --build-generator Ninja --build-options -DBUILD_TESTING=ON --test-command ctest
+        - ccache -s
+
+    - <<: *cmake-build-run-unittest
+      name: "CMake unittest build and run"
+      env: NAME=cmake_unittest
