@@ -3157,12 +3157,23 @@
             }
         },
         "macros_add": [
+            "MBEDTLS_FS_IO",
+            "MBEDTLS_SHA1_C",
             "CM4_BOOT_BY_APPLICATION",
             "QSPI_NO_SAMPLE_SHIFT"
         ],
         "detect_code": ["0813"],
         "components_add": [
-            "QSPIF"
+            "QSPIF",
+            "WHD",
+            "4343W",
+            "CYW43XXX"
+        ],
+        "extra_labels_add": [
+            "CORDIO"
+        ],
+        "features": [
+            "BLE"
         ],
         "device_has_add": [
             "USBDEVICE",
@@ -3172,7 +3183,7 @@
         "overrides": {
             "system_power_supply": "PWR_SMPS_1V8_SUPPLIES_LDO",
             "clock_source": "USE_PLL_HSE_EXTC",
-            "lse_available": 1,
+            "lse_available": 0,
             "lpticker_delay_ticks": 0,
             "network-default-interface-type": "ETHERNET"
         },
@@ -6066,6 +6077,19 @@
         "device_has_remove": [
             "QSPI",
             "ITM"
+        ],
+        "macros_add": [
+            "CONFIG_GPIO_AS_PINRESET"
+        ]
+    },
+    "EDGE_CONTROL": {
+        "inherits": ["MCU_NRF52840"],
+        "features_add": ["STORAGE"],
+        "device_has_remove": ["ITM"],
+        "device_has_add": ["WATCHDOG"],
+        "components_add": [
+            "SD",
+            "SPIF"
         ],
         "macros_add": [
             "CONFIG_GPIO_AS_PINRESET"
