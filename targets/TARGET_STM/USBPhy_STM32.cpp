@@ -285,7 +285,7 @@ void USBPhyHw::init(USBPhyEvents *events)
     #ifdef __HAL_RCC_USB2_OTG_FS_ULPI_CLK_SLEEP_DISABLE
         __HAL_RCC_USB2_OTG_FS_ULPI_CLK_SLEEP_DISABLE();
     #endif
-     
+
     map = PinMap_USB_HS;
 
     #ifdef USB_DYNAMIC_CONFIGURATION
@@ -307,7 +307,7 @@ void USBPhyHw::init(USBPhyEvents *events)
     #ifdef __HAL_RCC_USB2_OTG_FS_ULPI_CLK_SLEEP_DISABLE
         __HAL_RCC_USB2_OTG_FS_ULPI_CLK_SLEEP_DISABLE();
     #endif
-     
+
     map = PinMap_USB_FS;
 
     #ifdef USB_DYNAMIC_CONFIGURATION

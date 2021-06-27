@@ -29,6 +29,14 @@
 #include "USBPhy.h"
 #include "PeripheralPins.h"
 
+#if 1
+  #ifndef __MBED_CONFIG_DATA__
+  #include "mbed_config.h"
+  #endif
+#else
+  #define MBED_CONF_TARGET_USB_SPEED USE_USB_OTG_HS
+#endif
+
 #if !defined(MBED_CONF_TARGET_USB_SPEED)
 
 #if defined (USB)
