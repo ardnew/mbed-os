@@ -29,7 +29,7 @@
 #include "USBPhy.h"
 #include "PeripheralPins.h"
 
-#if 1
+#if 0
   #ifndef __MBED_CONFIG_DATA__
   #include "mbed_config.h"
   #endif
