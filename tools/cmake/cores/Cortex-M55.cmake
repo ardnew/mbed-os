@@ -17,6 +17,7 @@ elseif(${MBED_TOOLCHAIN} STREQUAL "ARM")
     )
 endif()
 
+
 function(mbed_set_cpu_core_definitions target)
     target_compile_definitions(${target}
         INTERFACE
